@@ -1,6 +1,22 @@
 import csv
 from datetime import datetime
 import os
+import re
+from urllib.parse import parse_qs, urlsplit
+
+def job_identity(job_url):
+    """Match LinkedIn job IDs across direct links and search/tracking URLs."""
+    parsed = urlsplit(job_url)
+    hostname = (parsed.hostname or '').lower()
+    if hostname == 'linkedin.com' or hostname.endswith('.linkedin.com'):
+        direct = re.search(r'/jobs/view/(?:[^/]*-)?(\d+)/?$', parsed.path)
+        selected = parse_qs(parsed.query).get('currentJobId', [''])[0]
+        job_id = direct.group(1) if direct else selected
+        if job_id.isdigit():
+            return f'linkedin:{job_id}'
+    # Other providers can use query parameters as part of their job identity.
+    return job_url
+
 
 class ApplicationLogger:
     def __init__(self, filename='applications.csv'):
@@ -20,7 +36,7 @@ class ApplicationLogger:
         with open(self.filename, 'r', newline='') as f:
             reader = csv.DictReader(f)
             for row in reader:
-                if row['url'] == job_url and row['status'] in ['submitted', 'generated', 'already_applied']:
+                if job_identity(row['url']) == job_identity(job_url) and row['status'] in ['submitted', 'generated', 'already_applied']:
                     return True
         return False
     

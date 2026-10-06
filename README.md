@@ -20,7 +20,8 @@ python main.py
 ```
 
 The current entry point searches for up to 10 jobs per run. It skips jobs already
-recorded as submitted or applied, generates cover letters, and attempts to fill
+recorded as submitted or applied, matching LinkedIn job IDs across direct links,
+search URLs, and tracking parameters. It generates cover letters and attempts to fill
 and submit applications. Applications marked `partial` need manual completion.
 
 ## Tests
