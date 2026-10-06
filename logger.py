@@ -20,7 +20,7 @@ class ApplicationLogger:
         with open(self.filename, 'r', newline='') as f:
             reader = csv.DictReader(f)
             for row in reader:
-                if row['url'] == job_url and row['status'] in ['submitted', 'generated']:
+                if row['url'] == job_url and row['status'] in ['submitted', 'generated', 'already_applied']:
                     return True
         return False
     
