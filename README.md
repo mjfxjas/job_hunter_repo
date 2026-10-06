@@ -1,24 +1,17 @@
-# Job Hunter - Automated Application System
+# Job Hunter
 
-Automated job application bot that scrapes LinkedIn, generates tailored cover letters with Claude, and submits applications.
+Python scripts for finding LinkedIn jobs, generating cover letters with Claude,
+and attempting Easy Apply submissions. Application status is stored in
+`applications.csv`; cover letters are saved in `cover_letters/`.
 
 ## Setup
 
-1. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-2. Create `.env` file:
-```bash
-cp .env.example .env
-```
-
-3. Add your credentials to `.env`:
-- Get Anthropic API key: https://console.anthropic.com/
-- Add LinkedIn credentials
-
-4. Update `profile.py` with your info
+Create a `.env` file containing `ANTHROPIC_API_KEY`, `LINKEDIN_EMAIL`, and
+`LINKEDIN_PASSWORD`. Update `profile.py` with your experience and target roles.
 
 ## Run
 
@@ -26,19 +19,15 @@ cp .env.example .env
 python main.py
 ```
 
-Applies to 50 jobs/day. Results logged to `applications.csv`.
+The current entry point searches for up to 10 jobs per run. It skips jobs already
+recorded as submitted or applied, generates cover letters, and attempts to fill
+and submit applications. Applications marked `partial` need manual completion.
 
-## What It Does
+## Tests
 
-1. Logs into LinkedIn
-2. Searches for roles matching your profile
-3. For each job:
-   - Reads job description
-   - Generates tailored cover letter with Claude
-   - Fills Easy Apply form
-   - Submits application
-   - Logs to CSV
+```bash
+python -m unittest discover -s tests -v
+```
 
-## Target Roles
-
-Cloud Engineer, DevOps, Solutions Architect, TAM, Sales Engineer, HubSpot/Integration roles - anything tech >$50k
+The logger tests use temporary CSV files. The other integration scripts can
+access LinkedIn, call Claude, or submit applications.
